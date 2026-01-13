@@ -1,6 +1,7 @@
 import pandas as pd
 import dash
 from dash import dcc, html
+from dash.dependencies import Input, Output
 import plotly.express as px
 
 # Load processed data
@@ -16,42 +17,108 @@ df = (
     .sort_values("date")
 )
 
-# Create line chart by region
-fig = px.line(
-    df,
-    x="date",
-    y="sales",
-    color="region",
-    labels={
-        "date": "Date",
-        "sales": "Sales ($)",
-        "region": "Region"
-    },
-    title="Pink Morsel Sales Over Time"
-)
-
-# Currency tick formatting
-fig.update_yaxes(tickprefix="$", showgrid=True)
-
-# Add price increase marker
-fig.add_shape(
-    type="line",
-    x0="2021-01-15",
-    x1="2021-01-15",
-    y0=0,
-    y1=1,
-    xref="x",
-    yref="paper",
-    line=dict(color="red", dash="dash")
-)
-
 # Dash app
 app = dash.Dash(__name__)
 
-app.layout = html.Div([
-    html.H1("Soul Foods Pink Morsel Sales Visualiser"),
-    dcc.Graph(figure=fig)
-])
+app.layout = html.Div(
+    className="page",
+    children=[
+        html.Div(
+            className="hero",
+            children=[
+                html.Div(
+                    className="title-block",
+                    children=[
+                        html.H1("Soul Foods Pink Morsel Sales Visualiser"),
+                        html.P(
+                            "Explore daily Pink Morsel sales and compare performance by region."
+                        ),
+                    ],
+                ),
+                html.Div(
+                    className="controls",
+                    children=[
+                        html.Label("Select region", className="label"),
+                        dcc.RadioItems(
+                            id="region-filter",
+                            className="radio",
+                            options=[
+                                {"label": "All", "value": "all"},
+                                {"label": "North", "value": "north"},
+                                {"label": "East", "value": "east"},
+                                {"label": "South", "value": "south"},
+                                {"label": "West", "value": "west"},
+                            ],
+                            value="all",
+                            inline=True,
+                        ),
+                    ],
+                ),
+            ],
+        ),
+        html.Div(
+            className="card",
+            children=[
+                html.Div(
+                    className="card-header",
+                    children=[
+                        html.H2("Pink Morsel Sales Over Time"),
+                        html.Span("Includes price increase marker on 2021-01-15", className="muted"),
+                    ],
+                ),
+                dcc.Graph(id="sales-chart", config={"displayModeBar": True}),
+            ],
+        ),
+    ],
+)
+
+
+@app.callback(
+    Output("sales-chart", "figure"),
+    Input("region-filter", "value"),
+)
+def update_chart(region: str):
+    region_df = df if region == "all" else df[df["region"] == region]
+
+    fig = px.line(
+        region_df,
+        x="date",
+        y="sales",
+        color="region",
+        labels={
+            "date": "Date",
+            "sales": "Sales ($)",
+            "region": "Region",
+        },
+        title=None,
+    )
+
+    # Currency tick formatting and subtle grid
+    fig.update_yaxes(tickprefix="$", showgrid=True, gridcolor="#2b2f36")
+    fig.update_xaxes(showgrid=False)
+
+    # Add price increase marker
+    fig.add_shape(
+        type="line",
+        x0="2021-01-15",
+        x1="2021-01-15",
+        y0=0,
+        y1=1,
+        xref="x",
+        yref="paper",
+        line=dict(color="#ff6b6b", dash="dash"),
+    )
+
+    fig.update_layout(
+        margin=dict(l=40, r=20, t=20, b=40),
+        plot_bgcolor="#11151c",
+        paper_bgcolor="#11151c",
+        font=dict(color="#e8edf2"),
+        legend_title_text="Region",
+        hovermode="x unified",
+    )
+
+    return fig
 
 if __name__ == "__main__":
     app.run(debug=True)
