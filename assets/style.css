@@ -1,0 +1,121 @@
+:root {
+  --bg: #0c1016;
+  --panel: #121824;
+  --accent: #ff6b6b;
+  --accent-2: #4fd1c5;
+  --text: #e8edf2;
+  --muted: #9aa4b5;
+  --border: #1f2735;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  --radius: 14px;
+  --font: "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(79, 209, 197, 0.06), transparent 32%),
+    radial-gradient(circle at 80% 0%, rgba(255, 107, 107, 0.08), transparent 30%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.title-block {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.title-block h1 {
+  margin: 0 0 8px;
+  letter-spacing: 0.4px;
+}
+
+.title-block p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.controls {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.radio .dash-radio-items-input {
+  accent-color: var(--accent);
+}
+
+.radio .dash-radio-items label {
+  margin-right: 12px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.radio .dash-radio-items input:checked + label {
+  background: rgba(255, 107, 107, 0.16);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 14px 4px;
+}
+
+.card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 4px 6px 0 6px;
+}
+
+.card-header h2 {
+  margin: 0;
+}
+
+.card-header .muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}
